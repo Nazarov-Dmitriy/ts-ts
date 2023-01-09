@@ -30,6 +30,10 @@ const schema = new Schema({
         type: Array,
         default: [],
     },
+    fileBook: {
+        type: String,
+        default: "",
+    },
 })
 
 export const BookModels = mongoose.model<Book & Document>('Book', schema)

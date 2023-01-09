@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import express from 'express';
 import { container } from '../infrastructure/container';
 import { BookServise } from '../books/books.servise';
+import multer from '../middleware/file';
 const router = express.Router()
 const servise = container.get(BookServise)
 
@@ -15,6 +16,7 @@ router.get('/api/books', async (req: Request, res: Response) => {
             books: books,
         });
     } catch (e) {
+
         res.status(500).json(e)
     }
 })
@@ -31,9 +33,29 @@ router.get('/api/create/', async (req: Request, res: Response) => {
 
 });
 
-router.post('/api/create/', async (req: Request, res: Response) => {
+router.post('/api/create/', multer.single('fileBook'), async (req: Request, res: Response) => {
+    const file = req.file as Express.Multer.File;
+
+    const {
+        title,
+        description,
+        authors,
+        favorite,
+        fileCover,
+        fileName
+    } = req.body
+    const data = {
+        title,
+        description,
+        authors,
+        favorite,
+        fileCover,
+        fileName,
+        fileBook: file?.originalname || undefined
+    }
+
     try {
-        const books = await servise.create(req.body)
+        const books = await servise.create(data)
         res.redirect('/api/books')
     } catch (e) {
         res.status(500).json(e)
@@ -78,12 +100,32 @@ router.get('/api/book/update/:id', async (req, res) => {
 
 
 
-router.post('/api/book/update/:id', async (req, res) => {
+router.post('/api/book/update/:id', multer.single('fileBook'), async (req, res) => {
+    const file = req.file as Express.Multer.File;
+
+    const {
+        title,
+        description,
+        authors,
+        favorite,
+        fileCover,
+        fileName
+    } = req.body
     const {
         id
     } = req.params
+    const data = {
+        title,
+        description,
+        authors,
+        favorite,
+        fileCover,
+        fileName,
+        fileBook: file?.originalname || undefined
+    }
+
     try {
-        const books = await servise.update(id, req.body)
+        const books = await servise.update(id, data)
         res.redirect(`/api/books`);
     } catch (e) {
         res.status(500).json(e)

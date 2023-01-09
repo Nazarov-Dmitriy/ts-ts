@@ -9,6 +9,7 @@ interface CreateBookDto {
     favorite: Book['favorite'];
     fileCover: Book['fileCover'];
     fileName: Book['fileName'];
+    fileBook?: Book['fileBook'];
 }
 
 export class BookServise {
@@ -27,19 +28,17 @@ export class BookServise {
         return books;
     }
 
-    async findId(id: string): Promise<Book> {
+    async findId(id: string): Promise<Book | null> {
         const books = await BookModels.findById(id).select('-__v')
-        return books!;
+        return books;
     }
 
-    async update(id: string, data: CreateBookDto): Promise<Book> {
+    async update(id: string, data: CreateBookDto): Promise<Book | null> {
         const books = await BookModels.findByIdAndUpdate(id, data).select('-__v')
-        return books!;
+        return books;
     }
 
     async delete(id: string): Promise<void> {
         const books = await BookModels.deleteOne({ _id: id });
     }
 }
-
-	// "message": "Тип \"(Book & Document<any, any, any> & { _id: ObjectId; }) | null\" не может быть назначен для типа \"Book\".\n  Тип \"null\" не может быть назначен для типа \"Book\".",

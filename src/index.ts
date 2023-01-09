@@ -5,14 +5,18 @@ require('dotenv').config()
 import bookRoutes from './routes/bookRoutes'
 import { db } from './infrastructure/db_connection'
 const PORT = process.env.PORT || 7070
+
+
 const app = express()
 app.engine('html', require('ejs').renderFile);
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.static('public/'));
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
 app.use('/', bookRoutes);
 
 app.listen(PORT, async () => {
